@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Editor estilo Microsoft Word</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: #f3f3f3;
+      color: #222;
+    }
+
+    .app {
+      max-width: 1100px;
+      margin: 24px auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      overflow: hidden;
+      border: 1px solid #ddd;
+    }
+
+    /* Barra superior estilo Word */
+    .title-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      background: linear-gradient(90deg, #185abd, #2b88f5);
+      color: #fff;
+      font-size: 13px;
+    }
+
+    .title-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .word-logo {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      background: #185abd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+      color: #fff;
+    }
+
+    .doc-title {
+      font-weight: 500;
+    }
+
+    .title-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      opacity: 0.9;
+      font-size: 12px;
+    }
+
+    .avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #fff;
+      color: #185abd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    /* Faixa de abas (Arquivo, Página Inicial, etc.) */
+    .tab-bar {
+      display: flex;
+      align-items: flex-end;
+      padding: 0 18px;
+      border-bottom: 1px solid #ddd;
+      background: #f7f7f7;
+      gap: 16px;
+      font-size: 13px;
+    }
+
+    .tab {
+      padding: 8px 4px;
+      cursor: default;
+      color: #333;
+    }
+
+    .tab.active {
+      border-bottom: 3px solid #2b88f5;
+      font-weight: 600;
+      color: #2b88f5;
+    }
+
+    /* Faixa de ferramentas (Ribbon) */
+    .ribbon {
+      padding: 10px 18px 12px;
+      display: flex;
+      gap: 24px;
+      border-bottom: 1px solid #ddd;
+      background: #fafafa;
+      font-size: 12px;
+    }
+
+    .ribbon-group {
+      border-right: 1px solid #e2e2e2;
+      padding-right: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .ribbon-group:last-child {
+      border-right: none;
+    }
+
+    .group-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .btn {
+      border: 1px solid transparent;
+      border-radius: 4px;
+      padding: 4px 6px;
+      background: #ffffff;
+      cursor: pointer;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn:hover {
+      border-color: #c7daf5;
+      background: #eaf2ff;
+    }
+
+    .btn.active {
+      background: #d8e6ff;
+      border-color: #2b88f5;
+    }
+
+    .btn-icon {
+      font-size: 14px;
+    }
+
+    select, input[type="number"] {
+      font-size: 12px;
+      padding: 3px 4px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background: #fff;
+    }
+
+    .group-label {
+      text-align: center;
+      font-size: 10px;
+      text-transform: uppercase;
+      color: #777;
+      margin-top: 2px;
+    }
+
+    /* Área de edição / página */
+    .editor-wrap {
+      background: #d4d4d4;
+      padding: 18px 0 40px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .page {
+      width: 794px; /* A4 ~ 96dpi */
+      min-height: 1123px;
+      background: #fff;
+      box-shadow: 0 0 0 1px #e5e5e5, 0 12px 30px rgba(0, 0, 0, 0.18);
+      padding: 72px 72px 96px;
+      position: relative;
+    }
+
+    .page::after {
+      content: "Página 1";
+      position: absolute;
+      bottom: 24px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 11px;
+      color: #999;
+    }
+
+    #editor {
+      min-height: 800px;
+      outline: none;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    #editor p {
+      margin-bottom: 8px;
+    }
+
+    #editor h1 {
+      font-size: 26px;
+      margin-bottom: 8px;
+    }
+
+    #editor h2 {
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+
+    /* Pequena barra de status */
+    .status-bar {
+      font-size: 11px;
+      color: #555;
+      padding: 4px 18px;
+      background: #f7f7f7;
+      border-top: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .zoom {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .zoom input[type="range"] {
+      width: 120px;
+    }
+
+    @media (max-width: 960px) {
+      .app {
+        margin: 0;
+        border-radius: 0;
+      }
+
+      .page {
+        width: 100%;
+        min-height: 70vh;
+        padding: 32px 20px 60px;
+      }
+
+      .editor-wrap {
+        padding-inline: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Barra de título -->
+    <div class="title-bar">
+      <div class="title-left">
+        <div class="word-logo">W</div>
+        <span class="doc-title">Documento em branco - Word</span>
+      </div>
+      <div class="title-right">
+        <span>Salvando automaticamente...</span>
+        <div class="avatar">OS</div>
+      </div>
+    </div>
+
+    <!-- Abas -->
+    <div class="tab-bar">
+      <div class="tab">Arquivo</div>
+      <div class="tab active">Página Inicial</div>
+      <div class="tab">Inserir</div>
+      <div class="tab">Layout</div>
+      <div class="tab">Exibir</div>
+    </div>
+
+    <!-- Ribbon -->
+    <div class="ribbon">
+      <div class="ribbon-group">
+        <div class="group-buttons">
+          <button class="btn" onclick="formatDoc('undo')" title="Desfazer">
+            <span class="btn-icon">↶</span>
+          </button>
+          <button class="btn" onclick="formatDoc('redo')" title="Refazer">
+            <span class="btn-icon">↷</span>
+          </button>
+        </div>
+        <div class="group-label">Desfazer</div>
+      </div>
+
+      <div class="ribbon-group">
+        <div class="group-buttons">
+          <select id="fontFamily" onchange="setFont(this.value)">
+            <option value="">Fonte</option>
+            <option value="Calibri">Calibri</option>
+            <option value="Arial">Arial</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Roboto">Roboto</option>
+          </select>
+          <input
+            id="fontSize"
+            type="number"
+            min="8"
+            max="72"
+            value="14"
+            onchange="setSize(this.value)"
+            style="width: 52px;"
+          />
+        </div>
+        <div class="group-label">Fonte</div>
+      </div>
+
+      <div class="ribbon-group">
+        <div class="group-buttons">
+          <button class="btn" onclick="toggleFormat(this, 'bold')" title="Negrito">
+            <span class="btn-icon"><b>B</b></span>
+          </button>
+          <button class="btn" onclick="toggleFormat(this, 'italic')" title="Itálico">
+            <span class="btn-icon"><i>I</i></span>
+          </button>
+          <button class="btn" onclick="toggleFormat(this, 'underline')" title="Sublinhado">
+            <span class="btn-icon"><u>U</u></span>
+          </button>
+          <button class="btn" onclick="toggleFormat(this, 'strikeThrough')" title="Tachado">
+            <span class="btn-icon">S</span>
+          </button>
+        </div>
+        <div class="group-label">Estilo</div>
+      </div>
+
+      <div class="ribbon-group">
+        <div class="group-buttons">
+          <button class="btn" onclick="formatDoc('justifyLeft')" title="Alinhar à esquerda">
+            <span class="btn-icon">☰</span>
+          </button>
+          <button class="btn" onclick="formatDoc('justifyCenter')" title="Centralizar">
+            <span class="btn-icon">≡</span>
+          </button>
+          <button class="btn" onclick="formatDoc('justifyRight')" title="Alinhar à direita">
+            <span class="btn-icon">☷</span>
+          </button>
+          <button class="btn" onclick="formatDoc('justifyFull')" title="Justificar">
+            <span class="btn-icon">☰</span>
+          </button>
+        </div>
+        <div class="group-label">Parágrafo</div>
+      </div>
+
+      <div class="ribbon-group">
+        <div class="group-buttons">
+          <button class="btn" onclick="formatDoc('insertUnorderedList')" title="Lista com marcadores">
+            • Lista
+          </button>
+          <button class="btn" onclick="formatDoc('insertOrderedList')" title="Lista numerada">
+            1. Lista
+          </button>
+        </div>
+        <div class="group-label">Listas</div>
+      </div>
+
+      <div class="ribbon-group">
+        <div class="group-buttons">
+          <button class="btn" onclick="applyHeading('p')">Normal</button>
+          <button class="btn" onclick="applyHeading('h1')">Título 1</button>
+          <button class="btn" onclick="applyHeading('h2')">Título 2</button>
+        </div>
+        <div class="group-label">Estilos</div>
+      </div>
+    </div>
+
+    <!-- Página / Editor -->
+    <div class="editor-wrap">
+      <div class="page">
+        <div id="editor" contenteditable="true">
+          <h1>Documento em branco</h1>
+          <p>Comece a digitar aqui como se estivesse no Microsoft Word. Você pode usar os botões da faixa de opções acima para aplicar negrito, itálico, sublinhado, alterar o tamanho da fonte, alinhar o texto e muito mais.</p>
+          <p>Este é apenas um simulador visual, ideal para testes de interface ou protótipos.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barra de status -->
+    <div class="status-bar">
+      <span id="wordCount">Palavras: 0</span>
+      <div class="zoom">
+        <span>Zoom</span>
+        <input type="range" min="70" max="150" value="100" id="zoomRange" />
+        <span id="zoomValue">100%</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function formatDoc(command, value = null) {
+      document.execCommand(command, false, value);
+      document.getElementById("editor").focus();
+    }
+
+    function toggleFormat(btn, command) {
+      btn.classList.toggle("active");
+      formatDoc(command);
+    }
+
+    function setFont(font) {
+      if (!font) return;
+      formatDoc("fontName", font);
+    }
+
+    function setSize(size) {
+      const value = parseInt(size, 10) || 14;
+      formatDoc("fontSize", value > 7 ? 7 : value);
+    }
+
+    function applyHeading(tag) {
+      if (tag === "p") {
+        formatDoc("formatBlock", "P");
+      } else if (tag === "h1") {
+        formatDoc("formatBlock", "H1");
+      } else if (tag === "h2") {
+        formatDoc("formatBlock", "H2");
+      }
+    }
+
+    const editor = document.getElementById("editor");
+    const wordCountEl = document.getElementById("wordCount");
+
+    function updateWordCount() {
+      const text = editor.innerText || "";
+      const words = text
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+      wordCountEl.textContent = `Palavras: ${words.length}`;
+    }
+
+    editor.addEventListener("keyup", updateWordCount);
+    editor.addEventListener("paste", () => {
+      setTimeout(updateWordCount, 50);
+    });
+    updateWordCount();
+
+    // Zoom
+    const zoomRange = document.getElementById("zoomRange");
+    const zoomValue = document.getElementById("zoomValue");
+    const page = document.querySelector(".page");
+
+    zoomRange.addEventListener("input", () => {
+      const value = zoomRange.value;
+      zoomValue.textContent = value + "%";
+      page.style.transformOrigin = "top center";
+      page.style.transform = `scale(${value / 100})`;
+    });
+  </script>
+</body>
+</html>

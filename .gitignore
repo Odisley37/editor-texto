@@ -1,0 +1,62 @@
+# === PYTHON ===
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyd
+*.pdb
+*.pkl
+*.egg-info/
+*.egg
+*.log
+
+# Virtual env
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+venv
+
+# Byte-compiled / optimized / DLL files
+*.so
+*.dll
+*.dylib
+
+# === DJANGO ===
+# SQLite database
+db.sqlite3
+db.sqlite3-journal
+
+# Django collected static files
+staticfiles/
+static_root/
+media/
+
+# Local settings
+.env
+*.env
+.env.*
+
+# Migrations (OPTIONAL — remova se quiser versionar)
+# editor/migrations/
+# */migrations/
+
+# === CODESPACES / VSCODE ===
+.vscode/
+.history/
+*.code-workspace
+
+# Codespaces cache
+.git/workingtrees/
+.git/devcontainers/
+
+# === GIT ===
+
+*.orig
+
+
+# === OS FILES ===
+.DS_Store
+Thumbs.db

@@ -1,0 +1,15 @@
+<h2>Documentos</h2>
+
+<ul>
+  {% for doc in docs %}
+    <li>
+      <a href="{% url 'editor:document_edit' doc.pk %}">
+        {{ doc.title }}
+      </a>
+    </li>
+  {% empty %}
+    <li>Nenhum documento criado.</li>
+  {% endfor %}
+</ul>
+
+<a href="{% url 'editor:document_create' %}">Novo documento</a>

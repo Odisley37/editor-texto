@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ document.title }}</title>
+  <style>
+    /* Aqui é o estilo para impressão/A4.
+       O @page e fontes já estão no CSS da view (WeasyPrint),
+       mas você pode ajustar margens internas aqui também. */
+
+    .page {
+      width: 100%;
+    }
+
+    .page-content {
+      /* se quiser, padding interno extra */
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="page-content">
+      {{ document.content_html|safe }}
+    </div>
+  </div>
+</body>
+</html>
