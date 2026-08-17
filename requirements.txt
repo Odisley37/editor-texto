@@ -8,7 +8,7 @@ pillow==12.0.0
 pycparser==2.23
 pydyf==0.11.0
 pyphen==0.17.2
-sqlparse==0.5.3
+sqlparse==0.6.0
 tinycss2==1.4.0
 tinyhtml5==2.0.0
 weasyprint==66.0
