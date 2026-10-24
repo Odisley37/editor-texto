@@ -1,5 +1,5 @@
 asgiref==3.10.0
-brotli==1.2.0
+brotli==1.2.1
 cffi==2.0.0
 cssselect2==0.8.0
 Django==5.2.8
